@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#12335b">
+<title>Tote Picking Management</title>
+
+<style>
+:root {
+  --navy:#12335b;
+  --blue:#1769aa;
+  --green:#16804a;
+  --orange:#c36b08;
+  --red:#c62828;
+  --bg:#f2f5f9;
+  --border:#dbe3ed;
+}
+
+{ box-sizing:border-box; }
+
+body {
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:#172337;
+}
+
+header {
+  background:var(--navy);
+  color:white;
+  padding:18px 14px;
+}
+
+header h1 {
+  margin:0;
+  font-size:22px;
+}
+
+header p {
+  margin:6px 0 0;
+  font-size:13px;
+  opacity:.9;
+}
+
+main {
+  max-width:760px;
+  margin:auto;
+  padding:12px;
+}
+
+.card {
+  background:white;
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:15px;
+  margin-bottom:13px;
+  box-shadow:0 2px 7px #152d4710;
+}
+
+h2 {
+  font-size:17px;
+  margin:0 0 13px;
+}
+
+label {
+  display:block;
+  font-size:13px;
+  font-weight:700;
+  margin:11px 0 6px;
+}
+
+input, select {
+  width:100%;
+  min-height:46px;
+  padding:11px;
+  font-size:16px;
+  border:1px solid #c8d3e0;
+  border-radius:8px;
+  background:white;
+}
+
+button {
+  width:100%;
+  min-height:46px;
+  padding:12px;
+  margin-top:10px;
+  border:0;
+  border-radius:8px;
+  color:white;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+button:disabled {
+  opacity:.55;
+  cursor:wait;
+}
+
+.blue { background:var(--blue); }
+.green { background:var(--green); }
+.orange { background:var(--orange); }
+.red { background:var(--red); }
+.gray { background:#526174; }
+
+.row {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+}
+
+#status {
+  padding:11px;
+  border-radius:8px;
+  margin-bottom:12px;
+  display:none;
+  overflow-wrap:anywhere;
+}
+
+#status.success { display:block;background:#e5f7eb;color:#126735; }
+#status.error { display:block;background:#ffebeb;color:#a51f1f; }
+#status.info { display:block;background:#e7f1ff;color:#124d8c; }
+
+.hidden { display:none!important; }
+
+.detail {
+  padding:10px 0;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  overflow-wrap:anywhere;
+}
+
+.detail strong { text-align:right; }
+
+.small {
+  color:#607087;
+  font-size:12px;
+  line-height:1.5;
+}
+
+.history-item {
+  border:1px solid var(--border);
+  padding:11px;
+  margin-top:8px;
+  border-radius:8px;
+  font-size:13px;
+  overflow-wrap:anywhere;
+}
+
+@media(max-width:420px) {
+  .row { grid-template-columns:1fr; }
+}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>📦 Tote Picking Management</h1>
+  <p>Permanent Tote QR • Picking • VRP • QC Verification</p>
+</header>
+
+<main>
+  <div id="status"></div>
+
+  <section class="card">
+    <h2>1. Tote Control</h2>
+
+    <label for="toteId">Scan Permanent Tote QR</label>
+    <input id="toteId" placeholder="Scan or enter Tote ID"
+           autocomplete="off" autofocus>
+
+    <div class="row">
+      <button class="blue" onclick="startTote()">START / LOAD</button>
+      <button class="green" onclick="viewTote()">VIEW TOTE</button>
+    </div>
+
+    <button class="gray" onclick="testConnection()">TEST GOOGLE CONNECTION</button>
+    <button class="orange" onclick="showHistory()">VIEW HISTORY</button>
+
+    <p class="small">
+      QR scan karne ke baad Tote ID check karein.
+      Picking details picker manually fill karega.
+    </p>
+  </section>
+
+  <section id="pickingCard" class="card hidden">
+    <h2>2. Picking Form</h2>
+
+    <label for="vendor">Vendor</label>
+    <input id="vendor" placeholder="Enter Vendor">
+
+    <label for="pickerName">Picker Name</label>
+    <input id="pickerName" placeholder="Enter Picker Name">
+
+    <label for="tlNo">TL</label>
+    <input id="tlNo" placeholder="Enter TL name / number">
+
+    <label for="totalTLQty">Total TL Qty</label>
+    <input id="totalTLQty" type="number" min="1" step="1"
+           placeholder="Example: 500">
+
+    <label for="toteQty">Tote Qty</label>
+    <input id="toteQty" type="number" min="1" step="1"
+           placeholder="Example: 100">
+
+    <button class="green" onclick="savePicking()">SAVE PICKING</button>
+    <button class="blue" onclick="completePicking()">PICKING COMPLETE</button>
+  </section>
+
+  <section id="vrpCard" class="card hidden">
+    <h2>3. VRP Entry & Verification</h2>
+
+    <label for="vrp">VRP</label>
+    <input id="vrp" placeholder="Enter VRP">
+
+    <label for="vrpBy">Verified By</label>
+    <input id="vrpBy" placeholder="Enter verifier name">
+
+    <button class="orange" onclick="verifyVRP()">SAVE VRP VERIFICATION</button>
+
+    <p class="small">
+      VRP ko apne authorized source record se manually match karein.
+      Yeh form entered VRP ko store karega; yeh kisi external system se
+      automatic matching nahi karta.
+    </p>
+  </section>
+
+  <section id="qcCard" class="card hidden">
+    <h2>4. QC Verification</h2>
+
+    <label for="passQty">Pass Qty</label>
+    <input id="passQty" type="number" min="0" step="1"
+           placeholder="Enter Pass Qty">
+
+    <label for="rejectQty">Reject Qty</label>
+    <input id="rejectQty" type="number" min="0" step="1"
+           placeholder="Enter Reject Qty">
+
+    <label for="qcVerifiedBy">QC Verified By</label>
+    <input id="qcVerifiedBy" placeholder="Enter QC name">
+
+    <button class="green" onclick="verifyQC()">VERIFY QC</button>
+
+    <p class="small">
+      Pass Qty + Reject Qty, Tote Qty ke barabar hona chahiye.
+    </p>
+  </section>
+
+  <section id="detailsCard" class="card hidden">
+    <h2>5. Tote Details — Read Only</h2>
+    <div id="details"></div>
+
+    <button class="blue" onclick="editTote()">EDIT PICKING</button>
+    <button class="red" onclick="resetTote()">COMPLETE / RESET TOTE</button>
+  </section>
+
+  <section id="historyCard" class="card hidden">
+    <h2>Recent History</h2>
+    <div id="historyList"></div>
+    <button class="gray" onclick="hideHistory()">CLOSE HISTORY</button>
+  </section>
+</main>
+
+<script>
+"use strict";
+
+const API_URL =
+  "https://script.google.com/a/macros/flipkart.com/s/AKfycbxZnszcXnvA8R2NJKO9PIeafHNFoAIi1alxrigNgD0znB8kzG93_TG4Gyitixk5k2c/exec";
+
+let currentData = null;
+let busy = false;
+
+const $ = id => document.getElementById(id);
+
+function message(text, type = "info") {
+  const box = $("status");
+  box.className = type;
+  box.textContent = text;
+}
+
+function hide(id) {
+  $(id).classList.add("hidden");
+}
+
+function show(id) {
+  $(id).classList.remove("hidden");
+}
+
+function toteId() {
+  return $("toteId").value.trim();
+}
+
+async function api(payload) {
+  if (busy) throw new Error("Request processing ho rahi hai. Wait karein.");
+
+  busy = true;
+  document.querySelectorAll("button").forEach(b => b.disabled = true);
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+      throw new Error("HTTP " + response.status);
+    }
+
+    const result = await response.json();
+
+    if (!result.ok) {
+      throw new Error(result.error || "API request failed");
+    }
+
+    return result;
+
+  } catch (err) {
+    if (err instanceof TypeError) {
+      throw new Error(
+        "Google connection nahi ho raha. Web App deployment aur access check karein."
+      );
+    }
+    throw err;
+
+  } finally {
+    busy = false;
+    document.querySelectorAll("button").forEach(b => b.disabled = false);
+  }
+}
+
+function clearPickingForm() {
+  ["vendor","pickerName","tlNo","totalTLQty","toteQty"]
+    .forEach(id => $(id).value = "");
+}
+
+function fillForm(d) {
+  $("vendor").value = d.vendor || "";
+  $("pickerName").value = d.pickerName || "";
+  $("tlNo").value = d.tlNo || "";
+  $("totalTLQty").value = d.totalTLQty ?? "";
+  $("toteQty").value = d.toteQty ?? "";
+  $("vrp").value = d.vrp || "";
+  $("passQty").value = d.passQty ?? "";
+  $("rejectQty").value = d.rejectQty ?? "";
+  $("vrpBy").value = "";
+  $("qcVerifiedBy").value = "";
+}
+
+function formPayload() {
+  return {
+    toteId: toteId(),
+    vendor: $("vendor").value.trim(),
+    pickerName: $("pickerName").value.trim(),
+    tlNo: $("tlNo").value.trim(),
+    totalTLQty: $("totalTLQty").value,
+    toteQty: $("toteQty").value,
+    updatedBy: $("pickerName").value.trim()
+  };
+}
+
+async function startTote() {
+  try {
+    if (!toteId()) throw new Error("Pehle Tote QR scan karein.");
+
+    const r = await api({action:"get", toteId:toteId()});
+
+    hide("detailsCard");
+    hide("historyCard");
+    hide("vrpCard");
+    hide("qcCard");
+    show("pickingCard");
+
+    if (r.found) {
+      currentData = r.data;
+      fillForm(r.data);
+      message("Existing Tote record load ho gaya. Edit karke save kar sakte hain.", "success");
+    } else {
+      currentData = null;
+      clearPickingForm();
+      fillForm({});
+      message("New Tote. Picking details manually fill karein.", "info");
+    }
+
+  } catch (e) {
+    message(e.message, "error");
+  }
+}
+
+async function viewTote() {
+  try {
+    if (!toteId()) throw new Error("Pehle Tote QR scan karein.");
+
+    const r = await api({action:"get", toteId:toteId()});
+
+    hide("pickingCard");
+    hide("vrpCard");
+    hide("qcCard");
+    hide("historyCard");
+
+    if (!r.found) {
+      currentData = null;
+      hide("detailsCard");
+      message("Is Tote ID ka current record nahi mila.", "info");
+      return;
+    }
+
+    currentData = r.data;
+    renderDetails(r.data);
+    show("detailsCard");
+    message("Tote details load ho gayi.", "success");
+
+  } catch (e) {
+    message(e.message, "error");
+  }
+}
+
+async function savePicking() {
+  try {
+    const p = formPayload();
+
+    if (!p.toteId || !p.vendor || !p.pickerName || !p.tlNo ||
+        !p.totalTLQty || !p.toteQty) {
+      throw new Error("Sabhi Picking fields fill karein.");
+    }
+
+    const action = currentData ? "edit" : "save";
+    const r = await api({...p, action});
+
+    currentData = r.data;
+    renderDetails(r.data);
+    show("detailsCard");
+    message(r.message, "success");
+
+  } catch (e) {
+    message(e.message, "error");
+  }
+}
+
+async function completePicking() {
+  try {
+    if (!currentData) {
+      throw new Error("Pehle Picking details save karein.");
+    }
+
+    const r = await api({
+      action:"pickingcomplete",
+      toteId:toteId()
+    });
+
+    currentData = r.data;
+    renderDetails(r.data);
+    hide("pickingCard");
+    show("vrpCard");
+    hide("qcCard");
+    show("detailsCard");
+    message(r.message, "success");
+
+  } catch (e) {
+    message(e.message, "error");
+  }
+}
+
+async function verifyVRP() {
+  try {
+    const r = await api({
+      action:"verifyvrp",
+      toteId:toteId(),
+      vrp:$("vrp").value.trim(),
+      verifiedBy:$("vrpBy").value.trim()
+    });
+
+    currentData = r.data;
+    renderDetails(r.data);
+    hide("vrpCard");
+    show("qcCard");
+    show("detailsCard");
+    message(r.message, "success");
+
+  } catch (e) {
+    message(e.message, "error");
+  }
+}
+
+async function verifyQC() {
+  try {
+    const r = await api({
+      action:"qcverify",
+      toteId:toteId(),
+      passQty:$("passQty").value,
+      rejectQty:$("rejectQty").value,
+      qcVerifiedBy:$("qcVerifiedBy").value.trim()
+    });
+
+    currentData = r.data;
+    renderDetails(r.data);
+    hide("qcCard");
+    hide("vrpCard");
+    hide("pickingCard");
+    show("detailsCard");
+    message(r.message, "success");
+
+  } catch (e) {
+    message(e.message, "error");
+  }
+}
+
+function editTote() {
+  if (!currentData) {
+    message("Pehle Tote details load karein.", "error");
+    return;
+  }
+
+  fillForm(currentData);
+  show("pickingCard");
+  hide("vrpCard");
+  hide("qcCard");
+  hide("detailsCard");
+  message("Edit mode: save karne par VRP/QC approval reset ho jayega.", "info");
+}
+
+async function resetTote() {
+  try {
+    if (!toteId()) throw new Error("Tote ID missing.");
+
+    if (!confirm(
+      "Record History mein save karke Current se remove karna hai?"
+    )) return;
+
+    const r = await api({
+      action:"reset",
+      toteId:toteId(),
+      reason:"Complete/Reset"
+    });
+
+    currentData = null;
+    clearPickingForm();
+    fillForm({});
+    hide("pickingCard");
+    hide("vrpCard");
+    hide("qcCard");
+    hide("detailsCard");
+
+    message(r.message, "success");
+
+  } catch (e) {
+    message(e.message, "error");
+  }
+}
+
+function renderDetails(d) {
+  const fields = [
+    ["Tote ID", d.toteId],
+    ["Vendor", d.vendor],
+    ["Picker Name", d.pickerName],
+    ["TL", d.tlNo],
+    ["Total TL Qty", d.totalTLQty],
+    ["Tote Qty", d.toteQty],
+    ["Status", d.status],
+    ["VRP", d.vrp],
+    ["VRP Status", d.vrpStatus],
+    ["Pass Qty", d.passQty],
+    ["Reject Qty", d.rejectQty],
+    ["QC Status", d.qcStatus],
+    ["QC Verified By", d.qcVerifiedBy]
+  ];
+
+  $("details").replaceChildren();
+
+  fields.forEach(([label, value]) => {
+    const line = document.createElement("div");
+    line.className = "detail";
+
+    const left = document.createElement("span");
+    left.textContent = label;
+
+    const right = document.createElement("strong");
+    right.textContent =
+      value === null || value === undefined || value === ""
+        ? "—"
+        : String(value);
+
+    line.append(left, right);
+    $("details").appendChild(line);
+  });
+}
+
+async function showHistory() {
+  try {
+    const r = await api({action:"history", limit:50});
+    const list = $("historyList");
+    list.replaceChildren();
+
+    if (!r.data.length) {
+      list.textContent = "History abhi empty hai.";
+    } else {
+      r.data.forEach(d => {
+        const item = document.createElement("div");
+        item.className = "history-item";
+
+        const title = document.createElement("strong");
+        title.textContent = "Tote: " + (d.toteId || "—");
+
+        const details = document.createElement("div");
+        details.textContent =
+          "Vendor: " + (d.vendor || "—") +
+          " | TL: " + (d.tlNo || "—") +
+          " | Qty: " + (d.toteQty || "—") +
+          " | Status: " + (d.status || "—");
+
+        const date = document.createElement("div");
+        date.className = "small";
+        date.textContent = "Archived: " + (d.archivedAt || "—");
+
+        item.append(title, details, date);
+        list.appendChild(item);
+      });
+    }
+
+    show("historyCard");
+    message("Recent History load ho gayi.", "success");
+
+  } catch (e) {
+    message(e.message, "error");
+  }
+}
+
+function hideHistory() {
+  hide("historyCard");
+}
+
+async function testConnection() {
+  try {
+    const r = await api({action:"health"});
+    message(r.message + " • " + r.version, "success");
+  } catch (e) {
+    message(e.message, "error");
+  }
+}
+
+$("toteId").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") startTote();
+});
+</script>
+</body>
+</html>
