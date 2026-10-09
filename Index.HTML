@@ -8,150 +8,152 @@
 
 <style>
 :root {
-  --navy:#12335b;
-  --blue:#1769aa;
-  --green:#16804a;
-  --orange:#c36b08;
-  --red:#c62828;
-  --bg:#f2f5f9;
-  --border:#dbe3ed;
+  --navy: #12335b;
+  --blue: #1769aa;
+  --green: #16804a;
+  --orange: #c36b08;
+  --red: #c62828;
+  --bg: #f2f5f9;
+  --border: #dbe3ed;
 }
 
-{ box-sizing:border-box; }
+* {
+  box-sizing: border-box;
+}
 
 body {
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:var(--bg);
-  color:#172337;
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: #172337;
 }
 
 header {
-  background:var(--navy);
-  color:white;
-  padding:18px 14px;
+  background: var(--navy);
+  color: white;
+  padding: 18px 14px;
 }
 
 header h1 {
-  margin:0;
-  font-size:22px;
+  margin: 0;
+  font-size: 22px;
 }
 
 header p {
-  margin:6px 0 0;
-  font-size:13px;
-  opacity:.9;
+  margin: 6px 0 0;
+  font-size: 13px;
+  opacity: 0.9;
 }
 
 main {
-  max-width:760px;
-  margin:auto;
-  padding:12px;
+  max-width: 760px;
+  margin: auto;
+  padding: 12px;
 }
 
 .card {
-  background:white;
-  border:1px solid var(--border);
-  border-radius:13px;
-  padding:15px;
-  margin-bottom:13px;
-  box-shadow:0 2px 7px #152d4710;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  padding: 15px;
+  margin-bottom: 13px;
+  box-shadow: 0 2px 7px #152d4710;
 }
 
 h2 {
-  font-size:17px;
-  margin:0 0 13px;
+  font-size: 17px;
+  margin: 0 0 13px;
 }
 
 label {
-  display:block;
-  font-size:13px;
-  font-weight:700;
-  margin:11px 0 6px;
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  margin: 11px 0 6px;
 }
 
 input, select {
-  width:100%;
-  min-height:46px;
-  padding:11px;
-  font-size:16px;
-  border:1px solid #c8d3e0;
-  border-radius:8px;
-  background:white;
+  width: 100%;
+  min-height: 46px;
+  padding: 11px;
+  font-size: 16px;
+  border: 1px solid #c8d3e0;
+  border-radius: 8px;
+  background: white;
 }
 
 button {
-  width:100%;
-  min-height:46px;
-  padding:12px;
-  margin-top:10px;
-  border:0;
-  border-radius:8px;
-  color:white;
-  font-size:14px;
-  font-weight:700;
-  cursor:pointer;
+  width: 100%;
+  min-height: 46px;
+  padding: 12px;
+  margin-top: 10px;
+  border: 0;
+  border-radius: 8px;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
 }
 
 button:disabled {
-  opacity:.55;
-  cursor:wait;
+  opacity: 0.55;
+  cursor: wait;
 }
 
-.blue { background:var(--blue); }
-.green { background:var(--green); }
-.orange { background:var(--orange); }
-.red { background:var(--red); }
-.gray { background:#526174; }
+.blue { background: var(--blue); }
+.green { background: var(--green); }
+.orange { background: var(--orange); }
+.red { background: var(--red); }
+.gray { background: #526174; }
 
 .row {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:9px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
 }
 
 #status {
-  padding:11px;
-  border-radius:8px;
-  margin-bottom:12px;
-  display:none;
-  overflow-wrap:anywhere;
+  padding: 11px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  display: none;
+  overflow-wrap: anywhere;
 }
 
-#status.success { display:block;background:#e5f7eb;color:#126735; }
-#status.error { display:block;background:#ffebeb;color:#a51f1f; }
-#status.info { display:block;background:#e7f1ff;color:#124d8c; }
+#status.success { display: block; background: #e5f7eb; color: #126735; }
+#status.error { display: block; background: #ffebeb; color: #a51f1f; }
+#status.info { display: block; background: #e7f1ff; color: #124d8c; }
 
-.hidden { display:none!important; }
+.hidden { display: none !important; }
 
 .detail {
-  padding:10px 0;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  justify-content:space-between;
-  gap:12px;
-  overflow-wrap:anywhere;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  overflow-wrap: anywhere;
 }
 
-.detail strong { text-align:right; }
+.detail strong { text-align: right; }
 
 .small {
-  color:#607087;
-  font-size:12px;
-  line-height:1.5;
+  color: #607087;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .history-item {
-  border:1px solid var(--border);
-  padding:11px;
-  margin-top:8px;
-  border-radius:8px;
-  font-size:13px;
-  overflow-wrap:anywhere;
+  border: 1px solid var(--border);
+  padding: 11px;
+  margin-top: 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  overflow-wrap: anywhere;
 }
 
-@media(max-width:420px) {
-  .row { grid-template-columns:1fr; }
+@media(max-width: 420px) {
+  .row { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -169,8 +171,7 @@ button:disabled {
     <h2>1. Tote Control</h2>
 
     <label for="toteId">Scan Permanent Tote QR</label>
-    <input id="toteId" placeholder="Scan or enter Tote ID"
-           autocomplete="off" autofocus>
+    <input id="toteId" placeholder="Scan or enter Tote ID" autocomplete="off" autofocus>
 
     <div class="row">
       <button class="blue" onclick="startTote()">START / LOAD</button>
@@ -199,12 +200,10 @@ button:disabled {
     <input id="tlNo" placeholder="Enter TL name / number">
 
     <label for="totalTLQty">Total TL Qty</label>
-    <input id="totalTLQty" type="number" min="1" step="1"
-           placeholder="Example: 500">
+    <input id="totalTLQty" type="number" min="1" step="1" placeholder="Example: 500">
 
     <label for="toteQty">Tote Qty</label>
-    <input id="toteQty" type="number" min="1" step="1"
-           placeholder="Example: 100">
+    <input id="toteQty" type="number" min="1" step="1" placeholder="Example: 100">
 
     <button class="green" onclick="savePicking()">SAVE PICKING</button>
     <button class="blue" onclick="completePicking()">PICKING COMPLETE</button>
@@ -232,12 +231,10 @@ button:disabled {
     <h2>4. QC Verification</h2>
 
     <label for="passQty">Pass Qty</label>
-    <input id="passQty" type="number" min="0" step="1"
-           placeholder="Enter Pass Qty">
+    <input id="passQty" type="number" min="0" step="1" placeholder="Enter Pass Qty">
 
     <label for="rejectQty">Reject Qty</label>
-    <input id="rejectQty" type="number" min="0" step="1"
-           placeholder="Enter Reject Qty">
+    <input id="rejectQty" type="number" min="0" step="1" placeholder="Enter Reject Qty">
 
     <label for="qcVerifiedBy">QC Verified By</label>
     <input id="qcVerifiedBy" placeholder="Enter QC name">
@@ -267,6 +264,7 @@ button:disabled {
 <script>
 "use strict";
 
+// Active Web App URL from cell M8
 const API_URL =
   "https://script.google.com/a/macros/flipkart.com/s/AKfycbxZnszcXnvA8R2NJKO9PIeafHNFoAIi1alxrigNgD0znB8kzG93_TG4Gyitixk5k2c/exec";
 
@@ -335,7 +333,7 @@ async function api(payload) {
 }
 
 function clearPickingForm() {
-  ["vendor","pickerName","tlNo","totalTLQty","toteQty"]
+  ["vendor", "pickerName", "tlNo", "totalTLQty", "toteQty"]
     .forEach(id => $(id).value = "");
 }
 
@@ -368,7 +366,7 @@ async function startTote() {
   try {
     if (!toteId()) throw new Error("Pehle Tote QR scan karein.");
 
-    const r = await api({action:"get", toteId:toteId()});
+    const r = await api({ action: "get", toteId: toteId() });
 
     hide("detailsCard");
     hide("historyCard");
@@ -396,7 +394,7 @@ async function viewTote() {
   try {
     if (!toteId()) throw new Error("Pehle Tote QR scan karein.");
 
-    const r = await api({action:"get", toteId:toteId()});
+    const r = await api({ action: "get", toteId: toteId() });
 
     hide("pickingCard");
     hide("vrpCard");
@@ -430,7 +428,7 @@ async function savePicking() {
     }
 
     const action = currentData ? "edit" : "save";
-    const r = await api({...p, action});
+    const r = await api({ ...p, action });
 
     currentData = r.data;
     renderDetails(r.data);
@@ -449,8 +447,8 @@ async function completePicking() {
     }
 
     const r = await api({
-      action:"pickingcomplete",
-      toteId:toteId()
+      action: "pickingcomplete",
+      toteId: toteId()
     });
 
     currentData = r.data;
@@ -469,10 +467,10 @@ async function completePicking() {
 async function verifyVRP() {
   try {
     const r = await api({
-      action:"verifyvrp",
-      toteId:toteId(),
-      vrp:$("vrp").value.trim(),
-      verifiedBy:$("vrpBy").value.trim()
+      action: "verifyvrp",
+      toteId: toteId(),
+      vrp: $("vrp").value.trim(),
+      verifiedBy: $("vrpBy").value.trim()
     });
 
     currentData = r.data;
@@ -490,11 +488,11 @@ async function verifyVRP() {
 async function verifyQC() {
   try {
     const r = await api({
-      action:"qcverify",
-      toteId:toteId(),
-      passQty:$("passQty").value,
-      rejectQty:$("rejectQty").value,
-      qcVerifiedBy:$("qcVerifiedBy").value.trim()
+      action: "qcverify",
+      toteId: toteId(),
+      passQty: $("passQty").value,
+      rejectQty: $("rejectQty").value,
+      qcVerifiedBy: $("qcVerifiedBy").value.trim()
     });
 
     currentData = r.data;
@@ -533,9 +531,9 @@ async function resetTote() {
     )) return;
 
     const r = await api({
-      action:"reset",
-      toteId:toteId(),
-      reason:"Complete/Reset"
+      action: "reset",
+      toteId: toteId(),
+      reason: "Complete/Reset"
     });
 
     currentData = null;
@@ -592,7 +590,7 @@ function renderDetails(d) {
 
 async function showHistory() {
   try {
-    const r = await api({action:"history", limit:50});
+    const r = await api({ action: "history", limit: 50 });
     const list = $("historyList");
     list.replaceChildren();
 
@@ -636,7 +634,7 @@ function hideHistory() {
 
 async function testConnection() {
   try {
-    const r = await api({action:"health"});
+    const r = await api({ action: "health" });
     message(r.message + " • " + r.version, "success");
   } catch (e) {
     message(e.message, "error");
